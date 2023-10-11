@@ -5,6 +5,7 @@ import { WorkoutsCollection } from '/imports/db/WorkoutsCollection';
 import { Workout } from './Workout.jsx';
 import { WorkoutForm } from './WorkoutForm.jsx';
 import { LoginForm } from './LoginForm';
+import RegistrationForm from './RegistrationForm.jsx';
 
 const toggleChecked = ({ _id, isChecked }) =>
   Meteor.call('workouts.setIsChecked', _id, !isChecked);
@@ -89,7 +90,10 @@ export const App = () => {
             </ul>
           </Fragment>
         ) : (
-          <LoginForm />
+          <Fragment>
+            <LoginForm />
+            <RegistrationForm />
+          </Fragment>
         )}
       </div>
     </div>
