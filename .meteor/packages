@@ -22,3 +22,5 @@ react-meteor-data       # React higher-order component for reactively tracking M
 dev-error-overlay
 accounts-password
 meteortesting:mocha
+accounts-github
+service-configuration
