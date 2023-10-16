@@ -4,7 +4,7 @@ import { useTracker } from 'meteor/react-meteor-data';
 import { WorkoutsCollection } from '/imports/db/WorkoutsCollection';
 import { Workout } from './Workout.jsx';
 import { WorkoutForm } from './WorkoutForm.jsx';
-import { LoginForm } from './LoginForm';
+import LoginPage from './LoginPage.jsx';
 
 const toggleChecked = ({ _id, isChecked }) =>
   Meteor.call('workouts.setIsChecked', _id, !isChecked);
@@ -65,9 +65,10 @@ export const App = () => {
         {user ? (
           <Fragment>
             <div className="user" onClick={logout}>
-              {user.username} 🚪
+              {user.username || user.profile.name} 🚪
             </div>
-            <WorkoutForm />
+
+            <WorkoutForm user={user} />
 
             <div className="filter">
               <button onClick={() => setHideCompleted(!hideCompleted)}>
@@ -89,7 +90,9 @@ export const App = () => {
             </ul>
           </Fragment>
         ) : (
-          <LoginForm />
+          <Fragment>
+            <LoginPage />
+          </Fragment>
         )}
       </div>
     </div>
