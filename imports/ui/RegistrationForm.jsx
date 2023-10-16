@@ -1,61 +1,66 @@
+// LoginRegisterForm.jsx
 import React, { useState } from 'react';
+import { Accounts } from 'meteor/accounts-base';
 
-const RegistrationForm = () => {
+const LoginRegisterForm = () => {
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleRegistration = () => {
-    Meteor.call('createUserAccount', { username, email, password }, (error) => {
-      if (error) {
-        // Handle registration error
-      } else {
-        // Redirect to a success page or log the user in
-      }
-    });
+  const submitForm = () => {
+    const user = Meteor.users.findOne({ username: username });
+
+    if (user) {
+      // If user exists, try logging in
+      Meteor.loginWithPassword(username, password, (error) => {
+        if (error) {
+          console.error('Login failed:', error);
+        } else {
+          console.log('Login successful!');
+        }
+      });
+    } else {
+      // If user doesn't exist, create a new account
+      Accounts.createUser(
+        {
+          username: username,
+          password: password,
+        },
+        (error) => {
+          if (error) {
+            console.error('Account creation failed:', error);
+          } else {
+            console.log('Account created successfully!');
+            // Log the user in after successful registration
+            Meteor.loginWithPassword(username, password, (error) => {
+              if (error) {
+                console.error('Login failed:', error);
+              } else {
+                console.log('Login successful!');
+              }
+            });
+          }
+        }
+      );
+    }
   };
 
   return (
-    <div>
-      <h2>Registration Form</h2>
-      <form>
-        <div className="form-group">
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            placeholder="Enter your username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-
-        <button onClick={handleRegistration}>Register</button>
-      </form>
+    <div id="login-register-form">
+      <input
+        type="text"
+        placeholder="Username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <button onClick={submitForm}>Register/Login</button>
     </div>
   );
 };
 
-export default RegistrationForm;
+export default LoginRegisterForm;
